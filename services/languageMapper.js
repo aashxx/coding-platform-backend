@@ -1,13 +1,14 @@
-const languageMapper = (language) => {
-    const languageMap = {
-        javascript: 'javascript',
-        python: 'python',
-        java: 'java',
-        cpp: 'cpp',
-        c: 'c',
-        sql: 'sqlite3'  
-    };
-    return languageMap[language.toLowerCase()];
-};
-
-module.exports = { languageMapper };
+const languageMap = {
+    javascript: 'js',
+    python: 'py',
+    java: 'java',
+    c: 'c',
+    cpp: 'cpp',
+  };
+  
+  const getLanguageId = (language) => {
+    return languageMap[language.toLowerCase()] || 'txt';
+  };
+  
+  module.exports = getLanguageId;
+  
