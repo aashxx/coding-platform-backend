@@ -1,17 +1,19 @@
-const { executeSql } = require('../executors/sqlExecutor');
+const { executeCode } = require('../services/pistonService');
 
 const validateSql = async (req, res) => {
     
-    const { userQuery, testCases } = req.body;
+    const { userCode, testCases } = req.body;
 
     const results = await Promise.all(
         testCases.map(async ({ input, expectedOutput }) => {
-            const actualOutput = await executeSql(userQuery, input);
+            const response = await executeCode('sqlite3', userCode, input);
+            const actualOutput = response?.run?.stdout?.trim() || '';
+
             return {
                 input,
                 expectedOutput,
                 actualOutput,
-                pass: JSON.stringify(actualOutput) === JSON.stringify(expectedOutput)
+                pass: actualOutput === expectedOutput
             };
         })
     );
