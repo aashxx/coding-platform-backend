@@ -1,19 +1,24 @@
 const axios = require('axios');
-require('dotenv').config();
 
-const executeCode = async (language, code, stdin) => {
-    try {
-        const response = await axios.post(process.env.PISTON_API_URL, {
-            language,
-            version: '*', 
-            files: [{ content: code }],
-            stdin: stdin,
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error communicating with Piston API:', error);
-        return { error: 'Error communicating with Piston API' };
-    }
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const executeCode = async (code, language, stdin) => {
+  const payload = {
+    language,
+    version: "*",
+    files: [{ content: code }],
+    stdin
+  };
+
+  await delay(300);
+  
+  try {
+    const response = await axios.post('https://emkc.org/api/v2/piston/execute', payload);
+    return response.data.run.stdout;
+  } catch (error) {
+    console.error("Piston API error:", error);
+    throw new Error("Failed to execute code.");
+  }
 };
 
 module.exports = { executeCode };

@@ -1,8 +1,8 @@
 const express = require('express');
-const { validateDsa } = require('../controllers/dsaController');
+const { runDSAProblem } = require('../controllers/dsaController');
 
 const router = express.Router();
 
-router.post('/validate', validateDsa);
+router.post('/run', runDSAProblem);
 
 module.exports = router;

@@ -1,45 +1,31 @@
-const axios = require('axios');
-const getLanguageId = require('../services/languageMapper');
+const { executeCode } = require('../services/pistonService');
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const runDSAProblem = async (req, res) => {
+  const { code, language, testCases } = req.body;
 
-const validateDsa = async (req, res) => {
-  const { userCode, language, testCases } = req.body;
-  const languageId = getLanguageId(language);
   const results = [];
-
   for (const { input, expectedOutput } of testCases) {
-    const payload = {
-      language: languageId,
-      source: userCode,
-      stdin: input,
-    };
-
+    const stdin = input;
     try {
-      const response = await axios.post('https://your-piston-url.com/api/execute', payload);
-      const actualOutput = response.data.run.output.trim();
-
+      const output = await executeCode(code, language, stdin);
       results.push({
         input,
         expectedOutput,
-        actualOutput,
-        pass: actualOutput === expectedOutput,
+        output,
+        passed: output.trim() === expectedOutput.trim()
       });
     } catch (error) {
-      console.error('Error communicating with Piston:', error);
+      console.error("Error executing test case:", error);
       results.push({
         input,
         expectedOutput,
-        actualOutput: null,
-        pass: false,
-        error: 'Error communicating with Piston API',
+        output: "Error executing code",
+        passed: false
       });
     }
-
-    await delay(200);
   }
 
-  res.json({ results });
+  res.json(results);
 };
 
-module.exports = { validateDsa };
+module.exports = { runDSAProblem };

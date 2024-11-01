@@ -1,8 +1,8 @@
 const express = require('express');
-const { validateSql } = require('../controllers/sqlController');
+const { runSQLProblem } = require('../controllers/sqlController');
 
 const router = express.Router();
 
-router.post('/validate', validateSql);
+router.post('/run', runSQLProblem);
 
 module.exports = router;
