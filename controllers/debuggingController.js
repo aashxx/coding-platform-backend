@@ -1,4 +1,4 @@
-const { executeCodeWithDelay } = require('../services/pistonService');
+const { executeCode } = require('../services/pistonService');
 const runDebuggingProblem = async (req, res) => {
   const { code, language, testCases } = req.body;
 
@@ -6,7 +6,7 @@ const runDebuggingProblem = async (req, res) => {
   for (const { input, expectedOutput } of testCases) {
     const stdin = input;
     try {
-      const output = await executeCodeWithDelay(code, language, stdin);
+      const output = await executeCode(code, language, stdin);
       results.push({
         input,
         expectedOutput,
