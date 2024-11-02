@@ -1,22 +1,24 @@
-const { executeWebCode } = require('../executors/webExecutor');
+const { validateWebProblem } = require('../services/webProgrammingService');
 
-const validateWeb = async (req, res) => {
-    
-    const { htmlCode, cssCode, jsCode, testCases } = req.body;
+const runWebProblem = async (req, res) => {
+  const { html, css, js, questionId } = req.body;
 
-    const results = await Promise.all(
-        testCases.map(async ({ input, expectedOutput }) => {
-            const actualOutput = await executeWebCode(htmlCode, cssCode, jsCode, input);
-            return {
-                input,
-                expectedOutput,
-                actualOutput,
-                pass: actualOutput === expectedOutput
-            };
-        })
-    );
+  if (!html) {
+    return res.status(400).json({ error: 'HTML and test cases are required.' });
+  }
 
-    res.json({ results });
+  try {
+    const testResults = await validateWebProblem(html, css || '', js || '', questionId);
+    const allPassed = testResults.every((result) => result.passed);
+
+    res.status(200).json({
+      success: true,
+      testResults,
+      allPassed
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
-module.exports = { validateWeb };
+module.exports = { runWebProblem };

@@ -1,8 +1,8 @@
 const express = require('express');
-const { validateWeb } = require('../controllers/webController');
+const { runWebProblem } = require('../controllers/webController');
 
 const router = express.Router();
 
-router.post('/', validateWeb);
+router.post('/run', runWebProblem);
 
 module.exports = router;
