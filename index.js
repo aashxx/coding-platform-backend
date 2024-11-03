@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 require('dotenv').config();
 
 const dsaRoute = require('./routes/dsaRoute');
@@ -11,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use('/api/dsa', dsaRoute);
 app.use('/api/debugging', debuggingRoute);
